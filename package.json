@@ -97,7 +97,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "eslint . --config ./.eslintrc.js --fix",
+      "eslint .\\**\\*.ts --config ./.eslintrc.js --fix",
       "prettier  --config ./.prettierrc.js --write"
     ]
   },
