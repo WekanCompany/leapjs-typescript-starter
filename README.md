@@ -2,7 +2,7 @@
 
 ## Description
 
-Baselines templates built on top of leap.js.
+Starter typescript templates built on top of leap.js.
 
 ## Getting started
 
