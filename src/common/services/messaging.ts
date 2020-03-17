@@ -22,7 +22,7 @@ async function sendVerificationMail(data: any): Promise<void> {
     },
     html: '',
   };
-  mail.send(message);
+  mail.queue(message);
 }
 
 async function sendResetPasswordMail(data: any): Promise<void> {
@@ -41,7 +41,7 @@ async function sendResetPasswordMail(data: any): Promise<void> {
     templateData: { name: data[2], temp_code: data[1] },
     html: '',
   };
-  mail.send(message);
+  mail.queue(message);
 }
 
 export { sendVerificationMail, sendResetPasswordMail };
