@@ -28,12 +28,12 @@
     "src": "build/src"
   },
   "dependencies": {
-    "@leapjs/access-control": "^0.5.18",
-    "@leapjs/common": "^0.5.18",
-    "@leapjs/core": "^0.5.18",
-    "@leapjs/crud": "^0.5.18",
-    "@leapjs/messaging": "^0.5.18",
-    "@leapjs/router": "^0.5.18",
+    "@leapjs/access-control": "^0.5.19",
+    "@leapjs/common": "^0.5.19",
+    "@leapjs/core": "^0.5.19",
+    "@leapjs/crud": "^0.5.19",
+    "@leapjs/messaging": "^0.5.19",
+    "@leapjs/router": "^0.5.19",
     "@typegoose/typegoose": "^6.4.0",
     "argon2": "^0.26.1",
     "aws-sdk": "2.514.0",
