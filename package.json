@@ -97,8 +97,8 @@
   },
   "lint-staged": {
     "*.ts": [
-      "eslint . --fix",
-      "prettier --write"
+      "eslint . --config ./.eslintrc.js --fix",
+      "prettier  --config ./.prettierrc.js --write"
     ]
   },
   "husky": {
