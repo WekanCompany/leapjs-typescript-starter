@@ -8,13 +8,13 @@ import { isValid } from 'configuration/helpers';
 function main(): void {
   configuration
     .init()
-    .then((status: string): any => {
-      Logger.log(`Setting up environment ${status}`, 'ConfigurationManager');
+    .then((): any => {
+      Logger.log(`Setting up environment`, 'ConfigurationManager');
       return isValid(configuration);
     })
-    .then((status: any): any => {
-      Logger.log(`Initializing settings ${status}`, 'ConfigurationManager');
-      Logger.log(`Connecting to the database ${status}`, 'LeapApplication');
+    .then((): any => {
+      Logger.log(`Initializing settings`, 'ConfigurationManager');
+      Logger.log(`Connecting to the database`, 'LeapApplication');
       Logger.log(`Starting server on ${configuration.port}`, 'LeapApplication');
       bootstrap(configuration);
       Logger.log(`Up and running`, 'LeapApplication');
