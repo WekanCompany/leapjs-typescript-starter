@@ -13,7 +13,6 @@
     "lint": "eslint src/** --ext .ts",
     "test": "cross-env NODE_ENV=test TS_NODE_FILES=true nyc mocha",
     "seed": "node build/tools/seeder/main.js --color | bunyan -o short",
-    "precommit": "lint-staged && npm test",
     "trace": "node --prof build/src/server.js",
     "flamegraph": "node --prof-process --preprocess -j isolate*.log | flamebearer"
   },
@@ -99,13 +98,12 @@
   "lint-staged": {
     "*.ts": [
       "eslint . --fix",
-      "prettier --write",
-      "npm test"
+      "prettier --write"
     ]
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged && npm test"
     }
   }
 }
