@@ -10,7 +10,7 @@
     "start": "cross-env NODE_ENV=development node build/src/server.js --color | bunyan -o short",
     "start:debug": "node --inspect-brk build/server.js --color | bunyan -o short",
     "watch": "tsc-watch --onSuccess \"npm run start\"",
-    "lint": "eslint src/** --ext .ts",
+    "lint": "eslint ./**/*.ts --ext .ts",
     "test": "cross-env NODE_ENV=test TS_NODE_FILES=true nyc mocha",
     "seed": "node build/tools/seeder/main.js --color | bunyan -o short",
     "trace": "node --prof build/src/server.js",
@@ -97,7 +97,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "eslint .\\**\\*.ts --config ./.eslintrc.js --fix",
+      "eslint ./**/*.ts --config ./.eslintrc.js --fix",
       "prettier  --config ./.prettierrc.js --write"
     ]
   },
