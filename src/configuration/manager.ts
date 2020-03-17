@@ -9,6 +9,7 @@ import { Aws, SecretsManager } from './classes/aws';
 import Database from './classes/database';
 import Logger from './classes/logger';
 import Messaging from './classes/messaging';
+import Queue from './classes/queue';
 
 class Configuration {
   public name = 'app';
@@ -25,10 +26,16 @@ class Configuration {
   public corsWhitelistedDomains = ['http://localhost'];
 
   @ValidateNested()
+  public aws!: Aws;
+
+  @ValidateNested()
   public authentication!: Authentication;
 
   @ValidateNested()
   public database!: Database;
+
+  @ValidateNested()
+  public queue!: Queue;
 
   @ValidateNested()
   public mailer!: Messaging;
@@ -36,21 +43,19 @@ class Configuration {
   @ValidateNested()
   public logger!: Logger;
 
-  @ValidateNested()
-  public aws!: Aws;
-
   public setContext(application: LeapApplication): void {
     this.application = application;
   }
 
   constructor() {
+    this.aws = new Aws();
+    this.aws.secrets = new SecretsManager();
     this.authentication = new Authentication();
     this.authentication.token = new Token();
     this.database = new Database();
-    this.logger = new Logger();
+    this.queue = new Queue();
     this.mailer = new Messaging();
-    this.aws = new Aws();
-    this.aws.secrets = new SecretsManager();
+    this.logger = new Logger();
   }
 
   public async init(): Promise<string> {
@@ -79,7 +84,10 @@ class Configuration {
 
     this.authentication.token.expiry = Number(process.env.AUTH_TOKEN_EXPIRY);
 
+    this.queue.url = process.env.QUEUE_URL || '';
+
     this.mailer.fromEmail = process.env.FROM_EMAIL || '';
+    this.mailer.queue = process.env.MAILER_QUEUE || this.mailer.queue;
 
     this.corsWhitelistedDomains =
       process.env.CORS_WHITELIST !== ''

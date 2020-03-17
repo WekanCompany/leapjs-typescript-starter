@@ -10,6 +10,8 @@ class Messaging {
   @IsEmail({}, { message: 'Please provide a valid "from" email address' })
   public fromEmail!: string;
 
+  public queue = 'mailer';
+
   private instance?: Mail;
 
   public setInstance(instance: Mail): void {
