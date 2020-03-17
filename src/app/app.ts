@@ -30,13 +30,7 @@ function bootstrap(configuration: Configuration, listen = true): void {
   container.resolve<Authentication>(Authentication).init();
 
   application.connectToDatabase(
-    new MongoDB(configuration.database.host, configuration.database.name, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-      useUnifiedTopology: true,
-      autoIndex: false,
-    }),
+    new MongoDB(configuration.database.host, configuration.database.name),
   );
 
   const mailer = new Mail(Sendgrid, container);
