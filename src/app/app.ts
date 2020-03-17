@@ -16,7 +16,7 @@ function bootstrap(configuration: Configuration, listen = true): void {
 
   const server = application.create(new ExpressAdapter(), {
     prefix: 'v1',
-    whitelist: [''],
+    whitelist: configuration.corsWhitelistedDomains,
     controllers: [UserController, AuthController, RoleController],
     beforeMiddlewares: [helmet(), json(acFilterAttributes)],
     afterMiddlewares: [ErrorHandler],
