@@ -7,12 +7,12 @@
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "shx rm -rf build",
-    "start": "cross-env NODE_ENV=production node build/src/server.js --color | bunyan -o short",
+    "start": "cross-env NODE_ENV=development node build/src/server.js --color | bunyan -o short",
     "start:debug": "node --inspect-brk build/server.js --color | bunyan -o short",
     "watch": "tsc-watch --onSuccess \"npm run start\"",
     "lint": "eslint src/** --ext .ts",
     "test": "cross-env NODE_ENV=test TS_NODE_FILES=true nyc mocha",
-    "seed": "cross-env NODE_ENV=production node build/tools/init.js --color | bunyan -o short",
+    "seed": "node build/tools/seeder/main.js --color | bunyan -o short",
     "precommit": "lint-staged && npm test",
     "trace": "node --prof build/src/server.js",
     "flamegraph": "node --prof-process --preprocess -j isolate*.log | flamebearer"
@@ -29,12 +29,12 @@
     "src": "build/src"
   },
   "dependencies": {
-    "@leapjs/access-control": "^0.5.17",
-    "@leapjs/common": "^0.5.17",
-    "@leapjs/core": "^0.5.17",
-    "@leapjs/crud": "^0.5.17",
-    "@leapjs/messaging": "^0.5.17",
-    "@leapjs/router": "^0.5.17",
+    "@leapjs/access-control": "^0.5.18",
+    "@leapjs/common": "^0.5.18",
+    "@leapjs/core": "^0.5.18",
+    "@leapjs/crud": "^0.5.18",
+    "@leapjs/messaging": "^0.5.18",
+    "@leapjs/router": "^0.5.18",
     "@typegoose/typegoose": "^6.4.0",
     "argon2": "^0.26.1",
     "aws-sdk": "2.514.0",
@@ -99,7 +99,8 @@
   "lint-staged": {
     "src/**/*.ts": [
       "eslint . --fix",
-      "git add"
+      "prettier --write",
+      "npm test"
     ]
   },
   "husky": {
