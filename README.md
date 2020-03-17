@@ -2,7 +2,7 @@
 
 ## Description
 
-Baselines templates build on top of leap.js.
+Baselines templates built on top of leap.js.
 
 ## Getting started
 
