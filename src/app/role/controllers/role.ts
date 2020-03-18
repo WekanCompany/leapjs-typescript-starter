@@ -45,7 +45,7 @@ class RoleController {
       .catch((error: any): any => Promise.reject(error));
   }
 
-  @Patch('/:ID')
+  @Patch('/:id')
   @UseBefore(Validator.validate(Role, ['update']))
   @UseBefore(accessControl())
   @UseBefore(Authentication)
@@ -117,7 +117,7 @@ class RoleController {
   }
 
   @Delete('/:id')
-  // @UseBefore(Authentication)
+  @UseBefore(Authentication)
   public async deleteRole(
     @Param('id') id: string,
     @Req() req: any,
