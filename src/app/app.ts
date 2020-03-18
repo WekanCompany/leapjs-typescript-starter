@@ -38,35 +38,39 @@ async function bootstrap(
     new MongoDB(configuration.database.host, configuration.database.name),
   );
 
-  try {
-    Logger.log(
-      `Receiver connecting to amqp://${configuration.queue.url.split('@')[1]}`,
-      'LeapApplication',
-    );
-    await receiver.init(configuration.queue.url);
-
-    Logger.log(
-      `Publisher connecting to amqp://${configuration.queue.url.split('@')[1]}`,
-      'LeapApplication',
-    );
-    await publisher.init(configuration.queue.url);
-
-    if (receiver.isConnected()) {
-      receiver.createQueue(configuration.mailer.queue);
-    }
-    if (publisher.isConnected()) {
-      receiver.listen(configuration.mailer.queue, Mail.defaultMailHandler);
-    }
-  } catch (error) {
-    Logger.error(error, '', 'LeapApplication');
-  }
-
-  const mailer = new Mail(Sendgrid, container);
-  // mailer.s;
-  mailer.init(configuration.mailer.apiKey);
-  configuration.mailer.setInstance(mailer);
-
   if (listen) {
+    try {
+      Logger.log(
+        `Receiver connecting to amqp://${
+          configuration.queue.url.split('@')[1]
+        }`,
+        'LeapApplication',
+      );
+      await receiver.init(configuration.queue.url);
+
+      Logger.log(
+        `Publisher connecting to amqp://${
+          configuration.queue.url.split('@')[1]
+        }`,
+        'LeapApplication',
+      );
+      await publisher.init(configuration.queue.url);
+
+      if (receiver.isConnected()) {
+        receiver.createQueue(configuration.mailer.queue);
+      }
+      if (publisher.isConnected()) {
+        receiver.listen(configuration.mailer.queue, Mail.defaultMailHandler);
+      }
+    } catch (error) {
+      Logger.error(error, '', 'LeapApplication');
+    }
+
+    const mailer = new Mail(Sendgrid, container);
+    mailer.setChannel(configuration.mailer.queue);
+    mailer.init(configuration.mailer.apiKey);
+    configuration.mailer.setInstance(mailer);
+
     server.listen(configuration.port);
   }
 }

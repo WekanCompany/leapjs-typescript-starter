@@ -87,7 +87,7 @@ class Configuration {
     this.queue.url = process.env.QUEUE_URL || '';
 
     this.mailer.fromEmail = process.env.FROM_EMAIL || '';
-    this.mailer.queue = process.env.MAILER_QUEUE || this.mailer.queue;
+    this.mailer.queue = process.env.MAIL_QUEUE || this.mailer.queue;
 
     this.corsWhitelistedDomains =
       process.env.CORS_WHITELIST !== ''
