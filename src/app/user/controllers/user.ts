@@ -129,7 +129,7 @@ class UserController {
         (results: any): Response => {
           return res
             .status(HttpStatus.OK)
-            .json(buildResultWithPagination(results, page, perPage));
+            .json(buildResultWithPagination('users', results, page, perPage));
         },
       )
       .catch((error: any): any => Promise.reject(error));
