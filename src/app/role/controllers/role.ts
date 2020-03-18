@@ -45,7 +45,7 @@ class RoleController {
       .catch((error: any): any => Promise.reject(error));
   }
 
-  @Patch('/:ID')
+  @Patch('/:id')
   @UseBefore(Validator.validate(Role, ['update']))
   @UseBefore(accessControl())
   @UseBefore(Authentication)
@@ -55,7 +55,7 @@ class RoleController {
     @Res() res: Response,
   ): Promise<any> {
     return this.roleService
-      .updateOne({ id }, role)
+      .updateOne({ _id: id }, role)
       .then(
         (result: any): Response => {
           return res.status(HttpStatus.OK).json({ data: { role: result } });
@@ -117,7 +117,7 @@ class RoleController {
   }
 
   @Delete('/:id')
-  // @UseBefore(Authentication)
+  @UseBefore(Authentication)
   public async deleteRole(
     @Param('id') id: string,
     @Req() req: any,
