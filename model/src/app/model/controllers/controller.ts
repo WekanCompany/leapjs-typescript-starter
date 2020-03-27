@@ -26,7 +26,7 @@ class <%= modelName %>Controller {
   @inject(<%= modelName %>Service) private readonly <%= modelNameLower %>Service!: <%= modelName %>Service;
 
   @Post()
-  @UseBefore(Validator.validate(<%= modelName %>, ['create']))
+  @UseBefore(validate(<%= modelName %>, ['create']))
   @UseBefore(accessControl())
   @UseBefore(Authentication)
   public async create<%= modelName %>(
@@ -45,8 +45,8 @@ class <%= modelName %>Controller {
       .catch((error: any): any => Promise.reject(error));
   }
 
-  @Patch('/:ID')
-  @UseBefore(Validator.validate(<%= modelName %>, ['update']))
+  @Patch('/:id')
+  @UseBefore(validate(<%= modelName %>, ['update']))
   @UseBefore(accessControl())
   @UseBefore(Authentication)
   public async update<%= modelName %>(
