@@ -21,7 +21,7 @@ import <%= modelName %>Service from 'app/<%= modelNameLower %>/services/<%= mode
 import Validator from 'common/middleware/validator';
 import { buildResultWithPagination } from '@leapjs/crud';
 
-@Controller('/<%= modelNameLower %>s')
+@Controller('/<%= modelNameLowerPlural %>s')
 class <%= modelName %>Controller {
   @inject(<%= modelName %>Service) private readonly <%= modelNameLower %>Service!: <%= modelName %>Service;
 
@@ -85,7 +85,7 @@ class <%= modelName %>Controller {
   @Get()
   @UseBefore(accessControl())
   @UseBefore(Authentication)
-  public async get<%= modelName %>s(
+  public async get<%= modelNamePlural %>s(
     @QueryParam('fields') fields: string,
     @QueryParam('sort') sort: string,
     @QueryParam('offset') offset: number,
@@ -110,7 +110,7 @@ class <%= modelName %>Controller {
         (results: any): Response => {
           return res
             .status(HttpStatus.OK)
-            .json(buildResultWithPagination('<%= modelNameLower %>s', results, page, perPage));
+            .json(buildResultWithPagination('<%= modelNameLowerPlural %>s', results, page, perPage));
         },
       )
       .catch((error: any): any => Promise.reject(error));
