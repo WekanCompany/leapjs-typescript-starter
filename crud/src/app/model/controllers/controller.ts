@@ -110,7 +110,7 @@ class <%= modelName %>Controller {
         (results: any): Response => {
           return res
             .status(HttpStatus.OK)
-            .json(buildResultWithPagination(results, page, perPage));
+            .json(buildResultWithPagination('<%= modelNameLower %>s', results, page, perPage));
         },
       )
       .catch((error: any): any => Promise.reject(error));
