@@ -3,7 +3,7 @@ import { <%= modelName %>, <%= modelName %>Model } from '../models/<%= modelName
 import { messages } from 'resources/strings/app/<%= modelNameLower %>';
 
 class <%= modelName %>Service {
-  public static async create(<%= modelNameLower %>: <%= modelName %>): Promise<{}> {
+  public static async createOne(<%= modelNameLower %>: <%= modelName %>): Promise<{}> {
     return new <%= modelName %>Model(<%= modelNameLower %>)
       .save()
       .then((result: any): {} => {
