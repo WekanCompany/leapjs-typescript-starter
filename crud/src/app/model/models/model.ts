@@ -1,10 +1,10 @@
 // import { IsDefined } from 'class-validator';
-import { prop, post, Typegoose, index } from 'typegoose';
+import { mongoErrorHandler } from '@leapjs/common';
+import { prop, post, Typegoose } from '@typegoose/typegoose';
 // import { messages } from 'resources/strings/app/<%= modelNameLower %>';
-import ErrorHandler from 'middleware/error-handler';
 
-@post('save', ErrorHandler.mongo('<%= modelName %>'))
-@post('findOneAndUpdate', ErrorHandler.mongo('<%= modelName %>'))
+@post('save', mongoErrorHandler('<%= modelName %>'))
+@post('findOneAndUpdate', mongoErrorHandler('<%= modelName %>'))
 class <%= modelName %> extends Typegoose {
   @prop()
   public status?: string;
