@@ -18,21 +18,16 @@ class Authentication {
         if (error) {
           return next(new UnauthorizedException(error.message));
         }
-
         if (!decodedToken) {
           let message = AUTH_TOKEN_INVALID;
-
           if (info !== undefined && info.message === 'No auth token') {
             message = AUTH_TOKEN_EMPTY;
           }
-
           if (info !== undefined && info.message === 'jwt expired') {
             message = AUTH_TOKEN_EXPIRED;
           }
-
           return next(new UnauthorizedException(message));
         }
-
         req.decodedToken = decodedToken;
         return next();
       },
