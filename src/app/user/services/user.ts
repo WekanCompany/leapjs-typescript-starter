@@ -1,6 +1,5 @@
 import {
   InternalServerException,
-  NotFoundException,
   getRandom,
   pad,
   injectable,
@@ -8,14 +7,9 @@ import {
 } from '@leapjs/common';
 import { CrudService } from '@leapjs/crud';
 import { hash } from 'argon2';
-import {
-  USER_NOT_FOUND,
-  USER_NOT_CREATED,
-  USER_CREATE_FAILED,
-} from 'resources/strings/app/user';
+import { USER_CREATE_FAILED } from 'resources/strings/app/user';
 import { UserStatus } from 'common/constants';
 import RoleService from 'app/role/services/role';
-import { Role } from 'app/role/models/role';
 import { configuration } from 'configuration/manager';
 import { sendVerificationMail } from 'common/services/messaging';
 import { User, UserModel } from '../models/user';
@@ -29,60 +23,38 @@ class UserService extends CrudService<User> {
   }
 
   public async createOne(user: User): Promise<any> {
-    return this.roleService
-      .getOne({ _id: user.role })
-      .then(
-        async (role: Partial<Role>): Promise<string> => {
-          if (!role) {
-            throw new NotFoundException('Role not found');
-          }
-          return hash(user.password);
-        },
-      )
-      .then(
-        async (hashString: string): Promise<User> => {
-          const random = getRandom(0, 10000);
-          const verificationCode = pad(String(random), '0', 4);
-          const newUser = user;
-          newUser.password = hashString;
-          newUser.verificationCode = verificationCode;
-          if (newUser.verificationCode === undefined) {
-            throw new InternalServerException(USER_CREATE_FAILED);
-          }
-          return new UserModel(newUser).save();
-        },
-      )
-      .then(
-        (result: User): User => {
-          if (!result) {
-            throw new InternalServerException(USER_NOT_CREATED);
-          }
+    await this.roleService.getOne({ _id: user.role });
 
-          if (result.status === 0 && result.verificationCode !== undefined) {
-            sendVerificationMail([
-              result.email,
-              result.verificationCode,
-              result.firstName,
-              configuration.name,
-            ]);
-          }
-          return result;
-        },
-      )
-      .catch(
-        (error: any): Promise<any> => {
-          return Promise.reject(error);
-        },
-      );
+    const random = getRandom(0, 10000);
+    const verificationCode = pad(String(random), '0', 4);
+    if (verificationCode === undefined) {
+      throw new InternalServerException(USER_CREATE_FAILED);
+    }
+
+    const newUser = user;
+    newUser.password = await hash(user.password);
+    newUser.verificationCode = verificationCode;
+
+    const savedUser = await new UserModel(newUser).save();
+
+    if (savedUser.status === 0 && savedUser.verificationCode !== undefined) {
+      sendVerificationMail([
+        savedUser.email,
+        savedUser.verificationCode,
+        savedUser.firstName,
+        configuration.name,
+      ]);
+    }
+    return savedUser;
   }
 
-  public async updateOne(condition: {}, user: Partial<User>): Promise<any> {
+  public async updateOne(conditions: {}, user: Partial<User>): Promise<any> {
     const updatedUser = user;
     if (user.password !== undefined) {
       updatedUser.password = await hash(user.password);
       updatedUser.status = UserStatus.VERIFIED;
     }
-    return UserModel.findOneAndUpdate(condition, updatedUser, {
+    return UserModel.findOneAndUpdate(conditions, updatedUser, {
       fields: {
         firstName: 1,
         lastName: 1,
@@ -92,14 +64,8 @@ class UserService extends CrudService<User> {
       },
       new: true,
     })
-      .exec()
-      .then((result: any): {} => {
-        if (!result) {
-          throw new NotFoundException(USER_NOT_FOUND);
-        }
-        return result;
-      })
-      .catch((error: any): any => Promise.reject(error));
+      .lean()
+      .exec();
   }
 }
 
