@@ -1,6 +1,9 @@
 import { userWithNoPasswords } from './data/user';
 
 const mockFindOneAndUpdate = {
+  lean(): any {
+    return this;
+  },
   exec(): any {
     return Promise.resolve(userWithNoPasswords);
   },

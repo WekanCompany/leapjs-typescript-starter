@@ -21,7 +21,7 @@ describe('', () => {
       stubs.role.restore();
     });
     it("should return object containing the created role's information", async () => {
-      const result = await RoleService.createOne(roles);
+      const result: any = await RoleService.createOne(roles);
       assert.calledOnce(stubs.role);
       expect(result.name).to.be.eq('Administrators');
     });
