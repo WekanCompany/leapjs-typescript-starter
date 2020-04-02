@@ -24,6 +24,7 @@ module.exports = {
       { exceptAfterSingleLine: true },
     ],
     indent: 'off',
+    'no-useless-constructor': 'off',
     'array-bracket-spacing': ['error', 'never'],
     'object-curly-spacing': ['error', 'always'],
     'prettier/prettier': 'error',

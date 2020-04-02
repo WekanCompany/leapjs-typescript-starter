@@ -33,21 +33,16 @@ class AuthService {
 
   public generateTokens(email: string): string {
     try {
-      const expiry: Date | undefined = addToDate(
+      const expiry = addToDate(
         new Date(),
         'minute',
         configuration.authentication.token.expiry,
       );
-
       if (expiry === undefined || !moment(expiry).isValid()) {
         throw new InternalServerException(GENERATE_TOKEN_FAILED);
       }
-
       return sign(
-        stringify({
-          email,
-          exp: expiry.getTime() / 1000,
-        }),
+        stringify({ email, exp: expiry.getTime() / 1000 }),
         configuration.authentication.token.secret,
         { algorithm: 'HS512' },
       );
@@ -57,63 +52,33 @@ class AuthService {
   }
 
   public async isEqual(user: User, savedUser: User): Promise<any> {
-    return verify(savedUser.password, user.password)
-      .then(
-        async (result: any): Promise<any> => {
-          if (result) {
-            return true;
-          }
-          if (!savedUser.tmpPassword) {
-            throw new UnauthorizedException(INVALID_CREDENTAILS);
-          }
-          return verify(savedUser.tmpPassword, user.password);
-        },
-      )
-      .then(
-        async (result: any): Promise<any> => {
-          if (result) {
-            return this.generateTokens(user.email);
-          }
-          throw new UnauthorizedException(INVALID_CREDENTAILS);
-        },
-      )
-      .catch(
-        (error: any): Promise<any> => {
-          return Promise.reject(error);
-        },
-      );
+    let result = await verify(savedUser.password, user.password);
+    if (!result) {
+      if (savedUser.tmpPassword) {
+        result = await verify(savedUser.tmpPassword, user.password);
+      }
+    }
+    if (!result) {
+      throw new UnauthorizedException(INVALID_CREDENTAILS);
+    }
+    return this.generateTokens(user.email);
   }
 
   public async authenticate(user: User): Promise<any> {
-    return this.userService
-      .getOne(
-        {
-          email: user.email,
-          status: {
-            $in: [
-              UserStatus.NOT_VERIFIED,
-              UserStatus.VERIFIED,
-              UserStatus.RESET_PASSWORD_ON_LOGIN,
-            ],
-          },
-        },
-        'firstName lastName email profileImageUrl password tmpPassword status',
-      )
-      .then(
-        async (res: any): Promise<{}> => {
-          const accessToken = await this.isEqual(user, res).catch(
-            (error: any): Promise<any> => {
-              throw new HttpException(error.status, error.message);
-            },
-          );
-          const result = res;
-          result.accessToken = accessToken;
-          delete result.password;
-          delete result.tmpPassword;
-          return result;
-        },
-      )
-      .catch((error: any): Promise<any> => Promise.reject(error));
+    const result: any = await this.userService.getOne(
+      { email: user.email },
+      'firstName lastName email profileImageUrl password tmpPassword status',
+    );
+    console.log(result);
+    const accessToken = await this.isEqual(user, result).catch(
+      (error: any): Promise<any> => {
+        throw new HttpException(error.status, error.message);
+      },
+    );
+    result.accessToken = accessToken;
+    delete result.password;
+    delete result.tmpPassword;
+    return result;
   }
 
   public async refresh(accessToken: string): Promise<any> {
@@ -133,7 +98,7 @@ class AuthService {
     }
     return this.userService
       .getOne({ email: decodedToken.email })
-      .then(async (res) => {
+      .then(async (res: any) => {
         const result = res;
         result.accessToken = this.generateTokens(result.email);
         return result;
@@ -142,58 +107,44 @@ class AuthService {
   }
 
   public async resetPassword(email: string): Promise<any> {
-    return this.userService
-      .getOne({
-        email,
-        status: {
-          $in: [UserStatus.VERIFIED, UserStatus.RESET_PASSWORD_ON_LOGIN],
+    const user: any = await this.userService.getOne({ email });
+    if (user) {
+      const tmpPassword = crypto.randomBytes(6).toString('hex');
+      const tmpPasswordHash = await hash(tmpPassword);
+      this.userService.updateOne(
+        { _id: user._id },
+        {
+          tmpPassword: tmpPasswordHash,
+          status: UserStatus.RESET_PASSWORD_ON_LOGIN,
         },
-      })
-      .then(
-        async (result: any): Promise<void> => {
-          const tmpPassword = crypto.randomBytes(6).toString('hex');
-          const tmpPasswordHash = await hash(tmpPassword);
-          this.userService.updateOne(
-            { _id: result._id },
-            {
-              tmpPassword: tmpPasswordHash,
-              status: UserStatus.RESET_PASSWORD_ON_LOGIN,
-            },
-          );
-          sendResetPasswordMail([result.email, tmpPassword, result.firstName]);
-        },
-      )
-      .catch((error: any): Promise<any> => Promise.reject(error));
+      );
+      sendResetPasswordMail([user.email, tmpPassword, user.firstName]);
+    }
   }
 
   public async sendOtp(id: string): Promise<void> {
-    return this.userService
-      .getOne({ _id: id }, 'email verificationCode')
-      .then(
-        async (result: any): Promise<void> => {
-          if (result.verificationCode !== null) {
-            sendVerificationMail([
-              result.email,
-              result.verificationCode,
-              result.firstName,
-              configuration.name,
-            ]);
-          }
-        },
-      )
-      .catch((error: any): Promise<any> => Promise.reject(error));
+    const user: any = await this.userService.getOne(
+      { _id: id },
+      'email verificationCode',
+    );
+    if (user.verificationCode !== null) {
+      sendVerificationMail([
+        user.email,
+        user.verificationCode,
+        user.firstName,
+        configuration.name,
+      ]);
+    }
   }
 
   public async verify(id: string, verificationCode: string): Promise<any> {
-    return this.userService
-      .updateOne({ _id: id, verificationCode }, { status: UserStatus.VERIFIED })
-      .then((res: any) => {
-        const result = res;
-        result.accessToken = this.generateTokens(result.email);
-        result.status = UserStatus.VERIFIED;
-        return result;
-      })
-      .catch((error: any) => Promise.reject(error));
+    const result = await this.userService.updateOne(
+      { _id: id, verificationCode },
+      { status: UserStatus.VERIFIED },
+    );
+    result.accessToken = this.generateTokens(result.email);
+    result.status = UserStatus.VERIFIED;
+    return result;
   }
 }
 
