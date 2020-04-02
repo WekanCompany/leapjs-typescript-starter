@@ -13,6 +13,7 @@ import {
 } from 'resources/strings/app/user';
 import { Role } from 'app/role/models/role';
 import { mongoErrorHandler } from '@leapjs/common';
+import { UserStatus } from 'common/constants';
 
 @index({ email: 1 }, { unique: true })
 @post('save', mongoErrorHandler('User'))
@@ -20,17 +21,17 @@ import { mongoErrorHandler } from '@leapjs/common';
 class User {
   @prop()
   @IsDefined({ groups: ['create'], message: EMPTY_FIRST_NAME })
-  @MaxLength(50, { groups: ['create', 'update'], message: INVALID_FIRST_NAME })
+  @MaxLength(50, { always: true, message: INVALID_FIRST_NAME })
   public firstName?: string;
 
   @prop()
   @IsDefined({ groups: ['create'], message: EMPTY_LAST_NAME })
-  @MaxLength(50, { groups: ['create', 'update'], message: INVALID_LAST_NAME })
+  @MaxLength(50, { always: true, message: INVALID_LAST_NAME })
   public lastName?: string;
 
   @prop({ required: true, unique: true })
   @IsDefined({ groups: ['auth', 'create'], message: EMPTY_EMAIL })
-  @IsEmail({}, { groups: ['auth', 'create', 'update'], message: INVALID_EMAIL })
+  @IsEmail({}, { always: true, message: INVALID_EMAIL })
   public email!: string;
 
   @prop({ required: true })
@@ -54,14 +55,14 @@ class User {
       require_tld: true,
       /* eslint-enable */
     },
-    { groups: ['create', 'update'], message: INVALID_PROFILE_IMAGE_URL },
+    { always: true, message: INVALID_PROFILE_IMAGE_URL },
   )
   public profileImageUrl?: string;
 
   @prop({ default: null })
   public verificationCode?: string;
 
-  @prop({ default: 0 })
+  @prop({ default: UserStatus.NOT_VERIFIED })
   public status?: number;
 }
 
