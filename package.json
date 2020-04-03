@@ -36,7 +36,7 @@
     "@leapjs/router": "0.5.28",
     "@typegoose/typegoose": "^6.4.0",
     "argon2": "^0.26.1",
-    "aws-sdk": "2.636.0",
+    "aws-sdk": "2.638.0",
     "bunyan": "1.8.12",
     "chalk": "2.4.2",
     "class-transformer": "^0.2.3",
