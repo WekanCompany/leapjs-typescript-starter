@@ -138,7 +138,7 @@ class AuthService {
   }
 
   public async verify(id: string, verificationCode: string): Promise<any> {
-    const result = await this.userService.updateOne(
+    const result: any = await this.userService.updateOne(
       { _id: id, verificationCode },
       { status: UserStatus.VERIFIED },
     );
