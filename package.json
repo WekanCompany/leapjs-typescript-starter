@@ -33,7 +33,7 @@
     "@leapjs/core": "0.5.28",
     "@leapjs/crud": "0.5.28",
     "@leapjs/messaging": "0.5.28",
-    "@leapjs/router": "0.5.28",
+    "@leapjs/router": "0.5.29",
     "@typegoose/typegoose": "^6.4.0",
     "argon2": "^0.26.1",
     "aws-sdk": "2.636.0",
