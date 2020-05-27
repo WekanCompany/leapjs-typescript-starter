@@ -28,13 +28,13 @@
     "src": "build/src"
   },
   "dependencies": {
-    "@leapjs/access-control": "0.5.28",
-    "@leapjs/common": "0.5.28",
-    "@leapjs/core": "0.5.28",
-    "@leapjs/crud": "0.5.28",
-    "@leapjs/messaging": "0.5.28",
-    "@leapjs/router": "0.5.28",
-    "@typegoose/typegoose": "^6.4.0",
+    "@leapjs/access-control": "0.5.35",
+    "@leapjs/common": "0.5.35",
+    "@leapjs/core": "0.5.35",
+    "@leapjs/crud": "0.5.35",
+    "@leapjs/messaging": "0.5.35",
+    "@leapjs/router": "0.5.35",
+    "@typegoose/typegoose": "^7.0.0",
     "argon2": "^0.26.1",
     "aws-sdk": "2.636.0",
     "bunyan": "1.8.12",
@@ -50,10 +50,12 @@
     "jsonwebtoken": "^8.5.1",
     "module-alias": "2.2.1",
     "moment": "^2.24.0",
-    "mongoose": "^5.9.6",
+    "mongoose": "^5.9.16",
     "passport": "0.4.0",
     "passport-jwt": "4.0.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "swagger-express-ts": "^1.0.1",
+    "swagger-ui-dist": "^3.25.4"
   },
   "devDependencies": {
     "@types/bunyan": "1.8.6",
