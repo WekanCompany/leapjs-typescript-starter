@@ -39,8 +39,14 @@ describe('Configuration manager', () => {
       expect(configuration.authentication.token.expiry).to.be.a('number');
       expect(configuration.authentication.token.secret).to.be.a('string');
 
-      expect(configuration.aws.secrets.region).to.be.a('string');
-      expect(configuration.aws.secrets.secretId).to.be.a('string');
+      expect(configuration.aws.secrets.region).to.satisfy((region: string) => {
+        return region === undefined || typeof region === 'string';
+      });
+      expect(configuration.aws.secrets.secretId).to.satisfy(
+        (secretId: string) => {
+          return secretId === undefined || typeof secretId === 'string';
+        },
+      );
 
       expect(configuration.corsWhitelistedDomains).to.be.a('array');
 

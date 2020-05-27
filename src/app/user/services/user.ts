@@ -6,7 +6,7 @@ import {
   inject,
 } from '@leapjs/common';
 import { CrudService } from '@leapjs/crud';
-import { hash } from 'argon2';
+import { hash as argonHash } from 'argon2';
 import { USER_CREATE_FAILED } from 'resources/strings/app/user';
 import { UserStatus } from 'common/constants';
 import RoleService from 'app/role/services/role';
@@ -32,7 +32,7 @@ class UserService extends CrudService<User> {
     }
 
     const newUser = user;
-    newUser.password = await hash(user.password);
+    newUser.password = await argonHash(user.password);
     newUser.verificationCode = verificationCode;
 
     const savedUser = await new UserModel(newUser).save();
@@ -51,7 +51,7 @@ class UserService extends CrudService<User> {
   public async updateOne(conditions: {}, user: Partial<User>): Promise<any> {
     const updatedUser = user;
     if (user.password !== undefined) {
-      updatedUser.password = await hash(user.password);
+      updatedUser.password = await argonHash(user.password);
       updatedUser.status = UserStatus.VERIFIED;
     }
     return UserModel.findOneAndUpdate(conditions, updatedUser, {

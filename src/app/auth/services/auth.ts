@@ -69,7 +69,6 @@ class AuthService {
       { email: user.email },
       'firstName lastName email profileImageUrl password tmpPassword status',
     );
-    console.log(result);
     const accessToken = await this.isEqual(user, result).catch(
       (error: any): Promise<any> => {
         throw new HttpException(error.status, error.message);

@@ -12,13 +12,18 @@ function main(): void {
       Logger.log(`Setting up environment`, 'ConfigurationManager');
       return isValid(configuration);
     })
-    .then((): any => {
-      Logger.log(`Initializing settings`, 'ConfigurationManager');
-      Logger.log(`Connecting to the database`, 'LeapApplication');
-      Logger.log(`Starting server on ${configuration.port}`, 'LeapApplication');
-      bootstrap(configuration);
-      Logger.log(`Up and running`, 'LeapApplication');
-    })
+    .then(
+      async (): Promise<any> => {
+        Logger.log(`Initializing settings`, 'ConfigurationManager');
+        Logger.log(`Connecting to the database`, 'LeapApplication');
+        Logger.log(
+          `Starting server on ${configuration.port}`,
+          'LeapApplication',
+        );
+        await bootstrap(configuration);
+        Logger.log(`Up and running`, 'LeapApplication');
+      },
+    )
     .catch((error): void => {
       Logger.error(expandObject(error), '', 'LeapApplication');
       process.exit(0);

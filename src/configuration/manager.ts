@@ -62,7 +62,7 @@ class Configuration {
     this.port = Number(process.env.PORT) || this.port;
     this.env = process.env.NODE_ENV || this.env;
 
-    if (process.env.AWS_SECRETS_NAME !== '') {
+    if (process.env.AWS_SECRETS_NAME && process.env.AWS_SECRETS_NAME !== '') {
       this.aws.secrets.region = process.env.AWS_SECRETS_REGION || '';
       this.aws.secrets.secretId = process.env.AWS_SECRETS_NAME || '';
 
