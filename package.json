@@ -14,7 +14,9 @@
     "test": "cross-env NODE_ENV=test TS_NODE_FILES=true nyc mocha",
     "seed": "node build/tools/seeder/main.js --color | bunyan -o short",
     "trace": "node --prof build/src/server.js",
-    "flamegraph": "node --prof-process --preprocess -j isolate*.log | flamebearer"
+    "flamegraph": "node --prof-process --preprocess -j isolate*.log | flamebearer",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "engines": {
     "npm": ">5.0",
@@ -55,7 +57,8 @@
     "passport-jwt": "4.0.0",
     "reflect-metadata": "^0.1.13",
     "swagger-express-ts": "^1.0.1",
-    "swagger-ui-dist": "^3.25.4"
+    "swagger-ui-dist": "^3.25.4",
+    "snyk": "^1.330.0"
   },
   "devDependencies": {
     "@types/bunyan": "1.8.6",
@@ -107,5 +110,6 @@
     "hooks": {
       "pre-commit": "lint-staged && npm test"
     }
-  }
+  },
+  "snyk": true
 }
